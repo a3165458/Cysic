@@ -93,6 +93,39 @@ EOF
     echo "证明器已安装并启动。"
 }
 
+# 升级证明器
+function upgrade_prover() {
+    # 下载新的 prover 版本
+    echo "正在升级 Cysic 证明器..."
+    pm2 delete cysic-aleo-prover 
+    rm -rf $CYSIC_PROVER_PATH
+    mkdir -p $CYSIC_PROVER_PATH
+    cd $CYSIC_PROVER_PATH
+
+    wget https://github.com/cysic-labs/aleo-miner/releases/download/v0.1.18/cysic-aleo-prover-v0.1.18.tgz
+    tar -xf cysic-aleo-prover-v0.1.18.tgz 
+    cd cysic-aleo-prover-v0.1.18
+
+    # 获取用户的奖励领取地址
+    read -p "请输入您的奖励领取地址 (Aleo 地址,没有的话进入 https://www.provable.tools/account 创建): " CLAIM_REWARD_ADDRESS
+    
+    # 获取用户的 IP 地址
+    read -p "请输入代理服务器的IP地址和端口 (例如: 192.168.1.100:9000): " PROVER_IP
+
+    # 创建启动脚本
+    cat <<EOF > start_prover.sh
+#!/bin/bash
+cd $CYSIC_PROVER_PATH/cysic-aleo-prover-v0.1.18
+export LD_LIBRARY_PATH=./:\$LD_LIBRARY_PATH
+./cysic-aleo-prover -l ./prover.log -a $PROVER_IP -w $CLAIM_REWARD_ADDRESS.$(curl -s ifconfig.me) -tls=true -p asia.aleopool.cysic.xyz:16699
+EOF
+    chmod +x start_prover.sh
+
+    # 使用 PM2 启动证明器
+    pm2 start start_prover.sh --name "cysic-aleo-prover"
+    echo "证明器已升级并重新启动。"
+}
+
 # 查看证明器日志
 function check_prover_logs() {
     pm2 logs cysic-aleo-prover
@@ -123,18 +156,20 @@ function main_menu() {
     echo "请选择要执行的操作:"
     echo "1. 安装 Cysic 代理服务器"
     echo "2. 安装 Cysic 证明器"
-    echo "3. 查看证明器日志"
-    echo "4. 停止证明器"
-    echo "5. 启动证明器"
-    echo "6. 重启证明器"
-    read -p "请输入选项（1-6）: " OPTION
+    echo "3. 升级 Cysic 证明器"
+    echo "4. 查看证明器日志"
+    echo "5. 停止证明器"
+    echo "6. 启动证明器"
+    echo "7. 重启证明器"
+    read -p "请输入选项（1-7）: " OPTION
     case $OPTION in
     1) install_dependencies && check_and_install_nodejs_and_npm && check_and_install_pm2 && install_agent ;;
     2) install_dependencies && check_and_install_nodejs_and_npm && check_and_install_pm2 && install_prover ;;
-    3) check_prover_logs ;;
-    4) stop_prover ;;
-    5) start_prover ;;
-    6) restart_prover ;;
+    3) upgrade_prover ;;
+    4) check_prover_logs ;;
+    5) stop_prover ;;
+    6) start_prover ;;
+    7) restart_prover ;;
     *) echo "无效选项。" ;;
     esac
 }
