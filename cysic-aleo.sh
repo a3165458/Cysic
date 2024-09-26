@@ -52,9 +52,9 @@ function install_agent() {
     cd $CYSIC_AGENT_PATH
 
     # 下载代理服务器
-    wget https://github.com/cysic-labs/aleo-miner/releases/download/v0.1.15/cysic-prover-agent-v0.1.15.tgz
-    tar -xf cysic-prover-agent-v0.1.15.tgz
-    cd cysic-prover-agent-v0.1.15
+    wget https://release.47s3rx.org/prover-agent-v0.1.12.tgz
+    tar -xf prover-agent-v0.1.12.tgz
+    cd prover-agent-v0.1.12/
 
     # 启动代理服务器
     bash start.sh
@@ -69,9 +69,9 @@ function install_prover() {
     cd $CYSIC_PROVER_PATH
 
     # 下载证明器
-    wget https://github.com/cysic-labs/aleo-miner/releases/download/v0.1.18/cysic-aleo-prover-v0.1.18.tgz
-    tar -xf cysic-aleo-prover-v0.1.18.tgz 
-    cd cysic-aleo-prover-v0.1.18
+    wget https://release.47s3rx.org/aleo-prover-0.1.14.tar.gz
+    tar -xf aleo-prover-0.1.14.tar.gz
+    cd aleo-prover/
 
     # 获取用户的奖励领取地址
     read -p "请输入您的奖励领取地址 (Aleo 地址,没有的话进入 https://www.provable.tools/account 创建): " CLAIM_REWARD_ADDRESS
@@ -84,7 +84,7 @@ function install_prover() {
 #!/bin/bash
 cd $CYSIC_PROVER_PATH/cysic-aleo-prover-v0.1.18
 export LD_LIBRARY_PATH=./:\$LD_LIBRARY_PATH
-./cysic-aleo-prover -l ./prover.log -a $PROVER_IP -w $CLAIM_REWARD_ADDRESS.$(curl -s ifconfig.me) -tls=true -p asia.aleopool.cysic.xyz:16699
+./cysic-aleo-prover -l ./prover.log -a $PROVER_IP -w $CLAIM_REWARD_ADDRESS.$(curl -s ifconfig.me) -tls=true -p pool.47s3rx.org:16699
 EOF
     chmod +x start_prover.sh
 
