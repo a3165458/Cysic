@@ -121,20 +121,40 @@ function uninstall_node() {
     echo "Cysic验证者节点已删除。"
 }
 
+function run_node_2.0() {
+read -p "请输入您的白名单 0x 地址: " address
+install_nodejs_and_npm
+install_pm2
+
+wget https://github.com/cysic-labs/phase2_libs/releases/download/v1.0.0/setup_linux.sh
+chmod +x setup_linux.sh
+./setup_linux.sh "$address"
+cd ~/cysic-verifier
+pm2 start start.sh
+}
+
+function check_node_2.0() {
+    pm2 logs start
+}
+
 # 主菜单
 function main_menu() {
     clear
     echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
     echo "========================= Cysic 验证者节点安装 ======================================="
     echo "请选择要执行的操作:"
-    echo "1. 安装 Cysic 验证者节点"
+    echo "1. 安装 Cysic 1.0验证者节点"
     echo "2. 查看节点日志"
     echo "3. 删除节点"
-    read -p "请输入选项（1-3）: " OPTION
+    echo "4. 运行2.0节点"
+    echo "5. 查看2.0节点日志"
+    read -p "请输入选项（1-5）: " OPTION
     case $OPTION in
     1) install_cysic_node ;;
     2) check_node ;;
     3) uninstall_node ;;
+    4) run_node_2.0 ;;
+    5) check_node_2.0 ;;
     *) echo "无效选项。" ;;
     esac
 }
