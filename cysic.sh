@@ -145,7 +145,7 @@ function main_menu() {
     echo "请选择要执行的操作:"
     echo "1. 安装 Cysic 1.0验证者节点"
     echo "2. 查看节点日志"
-    echo "3. 删除节点"
+    echo "3. 删除1.0节点"
     echo "4. 运行2.0节点"
     echo "5. 查看2.0节点日志"
     read -p "请输入选项（1-5）: " OPTION
